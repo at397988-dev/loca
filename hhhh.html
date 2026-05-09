@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出勤・退勤 System</title>
+
+    <link rel="stylesheet" href="hhh.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>出勤・退勤 管理 System</h1>
+
+  <!-- Company Info -->
+
+  <div class="info-box">
+
+    <input type="text" id="company" placeholder="Company Name">
+
+    <input type="text" id="code" placeholder="Company Code">
+
+    <input type="text" id="employee" placeholder="your name" value="">
+
+  </div>
+
+  <!-- Buttons -->
+
+  <div class="btn-box">
+
+    <button class="start-btn" onclick="startWork()">
+      出勤
+    </button>
+
+    <button class="end-btn" onclick="endWork()">
+      退勤
+    </button>
+
+  </div>
+
+  <!-- Table -->
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Company</th>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>出勤時間</th>
+        <th>退勤時間</th>
+        <th>Work Time</th>
+      </tr>
+
+    </thead>
+
+    <tbody id="tableBody"></tbody>
+
+  </table>
+
+  <!-- Summary -->
+
+  <div class="summary">
+
+    <h2>Monthly Summary</h2>
+
+    <p>
+      Total Work Time:
+      <strong id="totalWork">0</strong> Hours
+    </p>
+
+    <p>
+      休み Count:
+      <strong id="holidayCount">0</strong>
+    </p>
+
+  </div>
+
+</div>
+
+<script>
+  let startTime = "";
+let totalWork = 0;
+let holidayCount = 0;
+
+/* 出勤 Button */
+
+function startWork(){
+
+    const company =
+    document.getElementById("company").value;
+
+    const code =
+    document.getElementById("code").value;
+
+    const employee =
+    document.getElementById("employee").value;
+
+    if(company === "" || code === ""){
+
+        alert("Company Name and Code Required");
+
+        return;
+    }
+
+    startTime = new Date();
+
+    const time =
+    startTime.toLocaleTimeString();
+
+    const tbody =
+    document.getElementById("tableBody");
+
+    const row = tbody.insertRow();
+
+    row.id = "currentRow";
+
+    row.innerHTML = `
+        <td>${company}</td>
+        <td>${code}</td>
+        <td>${employee}</td>
+        <td>出勤</td>
+        <td>${time}</td>
+        <td>-</td>
+        <td>-</td>
+    `;
+}
+
+/* 退勤 Button */
+
+function endWork(){
+
+    if(startTime === ""){
+
+        alert("First Click 出勤");
+
+        return;
+    }
+
+    const endTime = new Date();
+
+    const end =
+    endTime.toLocaleTimeString();
+
+    const workHour =
+    ((endTime - startTime) / (1000 * 60 * 60)).toFixed(2);
+
+    totalWork += parseFloat(workHour);
+
+    document.getElementById("totalWork").innerText =
+    totalWork.toFixed(2);
+
+    const row =
+    document.getElementById("currentRow");
+
+    row.cells[3].innerText = "退勤";
+
+    row.cells[5].innerText = end;
+
+    row.cells[6].innerText =
+    workHour + " hrs";
+
+    startTime = "";
+}
+</script>
+
+</body>
+</html>
